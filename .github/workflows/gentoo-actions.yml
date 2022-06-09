@@ -1,0 +1,43 @@
+name: Gentoo
+
+on: 
+  push:
+    branches:
+      - main
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+
+    - name: Cleanup
+      run: |
+
+        sudo ./cleanup.sh &>/dev/null
+
+    - name: Setting environment
+      run: |
+        sudo ./env.sh
+
+    - name: Building packages
+      run: |
+        sudo ./build.sh
+
+    - name: Pushing to repo
+      run: |
+        (sudo mv /gentoo/var/cache/binpkgs ./
+        sudo chown -R $USER:$USER binpkgs
+        cd binpkgs
+        git config --global user.email "ci@github.com"
+        git config --global user.name "ACTIONS"
+        git init -b main
+        git commit -m 'Push'
+        git push https://thecatvoid:${{ secrets.GITLAB_TOKEN }}@gitlab.com/binpkg.git git push --set-upstream origin main --all -f)
