@@ -1,11 +1,6 @@
-name: Gentoo
+name: Gentoo wine tarball
 
 on: 
-  push:
-    branches:
-      - main
-  release:
-    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -20,7 +15,6 @@ jobs:
 
     - name: Cleanup
       run: |
-
         sudo ./cleanup.sh || ./tmate.sh
 
     - name: Setting environment
@@ -31,13 +25,26 @@ jobs:
       run: |
         sudo ./build.sh || ./tmate.sh
 
-    - name: Pushing to repo
+    - name: Creating tarball
       run: |
-        (sudo mv /gentoo/var/cache/binpkgs ./
-        sudo chown -R $USER:$USER binpkgs
-        cd binpkgs
-        git config --global user.email "ci@github.com"
-        git config --global user.name "ACTIONS"
-        git init -b main
-        git commit -m 'Push'
-        git push https://thecatvoid:${{ secrets.GITLAB_TOKEN }}@gitlab.com/binpkg.git git push --set-upstream origin main --all -f) || tmate.sh
+        sudo tar -cpzf gentoo.tar.gz \
+        --exclude=/gentoo/proc \
+        --exclude=/gentoo/tmp \
+        --exclude=/gentoo/mnt \
+        --exclude=/gentoo/dev \
+        --exclude=/gentoo/sys \
+        --exclude=/gentoo/run \ 
+        --exclude=/gentoo/media \ 
+        --exclude=/gentoo/var/log \
+        --exclude=/gentoo/var/cache \
+        --exclude=/gentoo/home/ \
+        --one-file-system /gentoo || ./tmate.sh
+
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.TOKEN_GITHUB }}"
+        automatic_release_tag: "latest"
+        prerelease: true
+        title: "Tarball"
+        files: |
+         ./gentoo.tar.gz
