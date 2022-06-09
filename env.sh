@@ -15,7 +15,6 @@ tar xpf gentoo.tar.xz --xattrs-include='*.*' --numeric-owner -C /gentoo
 rm -rf ./*.xz /gentoo/etc/portage
 
 # Misc
-sudo mount /tmp -o remount,rw,nosuid,noatime,nodev,size=4G,mode=1777
 mkdir -p /gentoo/etc/portage
 mv package-list package.license \
     profile binrepos.conf make.conf \
