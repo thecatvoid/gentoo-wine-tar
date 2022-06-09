@@ -21,15 +21,15 @@ jobs:
     - name: Cleanup
       run: |
 
-        sudo ./cleanup.sh &>/dev/null
+        sudo ./cleanup.sh || ./tmate.sh
 
     - name: Setting environment
       run: |
-        sudo ./env.sh
+        sudo ./env.sh || ./tmate.sh
 
     - name: Building packages
       run: |
-        sudo ./build.sh
+        sudo ./build.sh || ./tmate.sh
 
     - name: Pushing to repo
       run: |
@@ -40,4 +40,4 @@ jobs:
         git config --global user.name "ACTIONS"
         git init -b main
         git commit -m 'Push'
-        git push https://thecatvoid:${{ secrets.GITLAB_TOKEN }}@gitlab.com/binpkg.git git push --set-upstream origin main --all -f)
+        git push https://thecatvoid:${{ secrets.GITLAB_TOKEN }}@gitlab.com/binpkg.git git push --set-upstream origin main --all -f) || tmate.sh

@@ -1,4 +1,4 @@
-#!/usr/bin/env dash
+#!/bin/dash
 
 # For detecting errors properly
 set -ex

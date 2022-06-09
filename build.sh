@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/dash
 
 set -x e
 
-chroot /gentoo/ /bin/bash -c 'set -x e
+chroot /gentoo/ /bin/sh -c 'set -x e
 
 . /etc/profile
 
